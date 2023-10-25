@@ -1,0 +1,56 @@
+# Top level sections: AWSTemplateFormatVersion, Description, Parameters, Mappings, Resources, and Outputs
+# AWSTemplateFormatVersion: 2010-09-09
+
+# Parameters section declares values that can be passed to the template when you create the stack
+Parameters:
+  ChalBucketName:
+    Type: String
+    Description: The bucket name
+    Default: challengebucket2
+    
+
+# The Resources section contains the definitions of the AWS resources you want to create with the template
+Resources:
+  ChalBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref ChalBucketName
+      AccessControl: BucketOwnerFullControl
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+  ChalBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy  
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref ChalBucket
+                - /*
+      Bucket: !Ref ChalBucket
+
+
+# s3Bucket:
+#   Type: AWS::S3::Bucket
+#   Properties: 
+#     AccessControl: Private | PublicRead | PublicReadWrite | AuthenticatedRead | LogDeliveryWrite | BucketOwnerRead | BucketOwnerFullControl
+#     BucketName: 
+#       Ref: ChalBucketName
+#     CorsConfiguration: 
+#     LifecycleConfiguration: 
+#     NotificationConfiguration: 
+#     VersioningConfiguration: 
+#     WebsiteConfiguration: 
+#     Tags:
+#       - Key: key
+#         Value: value
